@@ -13,6 +13,11 @@ const exec = await download()
 console.log(`Downloaded Chromium to ${exec}`)
 ```
 
+```bash
+$ node example.js
+Downloaded Chromium to /Users/julian/.chromium-cache/chromium-mac-499413/chrome-mac/Chromium.app/Contents/MacOS/Chromium
+```
+
 ## Installation
 
 ```bash
