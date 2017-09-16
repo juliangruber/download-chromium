@@ -54,13 +54,14 @@ module.exports = async ({
   debug('download url %s', url)
 
   try { await mkdir(cacheRoot) } catch (_) {}
+  const folderPath = getFolderPath(platform, revision)
   const zipPath = `${folderPath}.zip`
 
   debug('download')
   await pipe(await get(url), fs.createWriteStream(zipPath))
 
   debug('extract')
-  await extract(zipPath, { dir: getFolderPath(platform, revision) })
+  await extract(zipPath, { dir: folderPath })
 
   debug('clean up')
   await unlink(zipPath)
