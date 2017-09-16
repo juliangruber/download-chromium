@@ -4,7 +4,7 @@ Download [Chromium](https://www.chromium.org/)!
 
 Caches executables locally so you never download them twice.
 
-Comes with a convenient CLI, so you do things like this:
+Comes with a convenient CLI, so you can do things like this:
 
 ```bash
 $ $(download-chromium) --headless --screenshot --disable-gpu https://twitter.com/
