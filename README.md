@@ -6,6 +6,15 @@ Caches executables locally so you never download them twice.
 
 ## Usage
 
+Use the CLI:
+
+```bash
+$ download-chromium
+/Users/julian/.chromium-cache/chromium-mac-499413/chrome-mac/Chromium.app/Contents/MacOS/Chromium
+```
+
+Or use the JavaScript API:
+
 ```js
 const download = require('download-chromium')
 
@@ -21,6 +30,12 @@ Downloaded Chromium to /Users/julian/.chromium-cache/chromium-mac-499413/chrome-
 ## Installation
 
 ```bash
+# for the CLI
+
+$ npm install -g download-chromium
+
+# for the API
+
 $ npm install download-chromium
 ```
 

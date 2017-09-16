@@ -7,6 +7,9 @@
   "scripts": {
     "test": "prettier-standard '**/*.js' && standard"
   },
+  "bin": {
+    "download-chromium": "bin.js"
+  },
   "dependencies": {
     "debug": "^3.0.1",
     "extract-zip": "^1.6.5",
