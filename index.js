@@ -4,7 +4,7 @@ const os = require('os')
 const { format, promisify } = require('util')
 const fs = require('fs')
 const mkdir = promisify(fs.mkdir)
-const exists = promisify(fs.exists)
+const stat = promisify(fs.stat)
 const unlink = promisify(fs.unlink)
 const assert = require('assert')
 const pipe = require('promisepipe')
@@ -15,10 +15,14 @@ const debug = require('debug')('download-chromium')
 const get = url => new Promise(resolve => https.get(url, resolve))
 
 const downloadURLs = {
-  linux: 'https://storage.googleapis.com/chromium-browser-snapshots/Linux_x64/%d/chrome-linux.zip',
-  mac: 'https://storage.googleapis.com/chromium-browser-snapshots/Mac/%d/chrome-mac.zip',
-  win32: 'https://storage.googleapis.com/chromium-browser-snapshots/Win/%d/chrome-win32.zip',
-  win64: 'https://storage.googleapis.com/chromium-browser-snapshots/Win_x64/%d/chrome-win32.zip',
+  linux:
+    'https://storage.googleapis.com/chromium-browser-snapshots/Linux_x64/%d/chrome-linux.zip',
+  mac:
+    'https://storage.googleapis.com/chromium-browser-snapshots/Mac/%d/chrome-mac.zip',
+  win32:
+    'https://storage.googleapis.com/chromium-browser-snapshots/Win/%d/chrome-win32.zip',
+  win64:
+    'https://storage.googleapis.com/chromium-browser-snapshots/Win_x64/%d/chrome-win32.zip'
 }
 
 const currentPlatform = (p => {
@@ -35,25 +39,33 @@ const getFolderPath = (platform, revision) =>
 
 const getExecutablePath = (platform, revision) => {
   const folder = getFolderPath(platform, revision)
-  if (platform === 'mac') return `${folder}/chrome-mac/Chromium.app/Contents/MacOS/Chromium`
-  if (platform === 'linux') return `${folder}/chrome-linux/chrome`
+  if (platform === 'mac') {
+    return `${folder}/chrome-mac/Chromium.app/Contents/MacOS/Chromium`
+  }
+  if (platform === 'linux') {
+    return `${folder}/chrome-linux/chrome`
+  }
   return `${folder}/chrome-win32/chrome.exe`
 }
 
-module.exports = async ({
-  platform: platform = currentPlatform,
-  revision: revision = '499413'
-} = {}) => {
+module.exports = async (
+  { platform: platform = currentPlatform, revision: revision = '499413' } = {}
+) => {
   const executablePath = getExecutablePath(platform, revision)
   debug('executable path %s', executablePath)
-  if (await exists(executablePath)) return executablePath
+  try {
+    await stat(executablePath)
+    return executablePath
+  } catch (_) {}
 
   let url = downloadURLs[platform]
   assert(url, `Unsupported platform: ${platform}`)
   url = format(url, revision)
   debug('download url %s', url)
 
-  try { await mkdir(cacheRoot) } catch (_) {}
+  try {
+    await mkdir(cacheRoot)
+  } catch (_) {}
   const folderPath = getFolderPath(platform, revision)
   const zipPath = `${folderPath}.zip`
 
