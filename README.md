@@ -16,6 +16,7 @@ Use the CLI:
 
 ```bash
 $ download-chromium
+Downloading Chromium r499413...Done!
 /Users/julian/.chromium-cache/chromium-mac-499413/chrome-mac/Chromium.app/Contents/MacOS/Chromium
 ```
 
@@ -47,7 +48,7 @@ $ npm install download-chromium
 
 ## API
 
-### download({ platform = currentPlatform, revision = '499413' })
+### download({ platform = currentPlatform, revision = '499413', log = false })
 
 Returns a Promise resolving with the Chromium executable path.
 

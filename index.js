@@ -49,7 +49,11 @@ const getExecutablePath = (platform, revision) => {
 }
 
 module.exports = async (
-  { platform: platform = currentPlatform, revision: revision = '499413' } = {}
+  {
+    platform: platform = currentPlatform,
+    revision: revision = '499413',
+    log: log = false
+  } = {}
 ) => {
   const executablePath = getExecutablePath(platform, revision)
   debug('executable path %s', executablePath)
@@ -69,6 +73,7 @@ module.exports = async (
   const folderPath = getFolderPath(platform, revision)
   const zipPath = `${folderPath}.zip`
 
+  if (log) process.stderr.write(`Downloading Chromium r${revision}...`)
   debug('download')
   await pipe(await get(url), fs.createWriteStream(zipPath))
 
@@ -78,5 +83,6 @@ module.exports = async (
   debug('clean up')
   await unlink(zipPath)
 
+  if (log) process.stderr.write('Done!\n')
   return executablePath
 }

@@ -3,7 +3,7 @@
 
 const download = require('.')
 
-download()
+download({ log: true })
   .then(exec => console.log(exec))
   .catch(err => {
     console.error(err)
