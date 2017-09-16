@@ -7,7 +7,7 @@ Caches executables locally so you never download them twice.
 Comes with a convenient CLI, so you do things like this:
 
 ```bash
-$ $(download-chromium) --screenshot --disable-gpu https://twitter.com/
+$ $(download-chromium) --headless --screenshot --disable-gpu https://twitter.com/
 ```
 
 ## Usage
