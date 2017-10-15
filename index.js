@@ -32,7 +32,9 @@ const currentPlatform = (p => {
   return ''
 })(os.platform())
 
-const cacheRoot = `${process.env.HOME}/.chromium-cache`
+const cacheRoot = process.env.NOW
+  ? '.'
+  : `${process.env.HOME}/.chromium-cache`
 
 const getFolderPath = (platform, revision) =>
   `${cacheRoot}/chromium-${platform}-${revision}`
