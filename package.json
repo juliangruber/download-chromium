@@ -11,8 +11,10 @@
     "download-chromium": "bin.js"
   },
   "dependencies": {
+    "cpr": "^2.2.0",
     "debug": "^3.0.1",
     "extract-zip": "^1.6.5",
+    "mkdirp": "^0.5.1",
     "promisepipe": "^2.0.0"
   },
   "devDependencies": {

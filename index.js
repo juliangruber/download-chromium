@@ -11,6 +11,9 @@ const pipe = require('promisepipe')
 const https = require('https')
 const extract = promisify(require('extract-zip'))
 const debug = require('debug')('download-chromium')
+const cpr = promisify(require('cpr'))
+const mkdirp = promisify(require('mkdirp'))
+const chmod = promisify(fs.chmod)
 
 const get = url => new Promise(resolve => https.get(url, resolve))
 
@@ -32,15 +35,13 @@ const currentPlatform = (p => {
   return ''
 })(os.platform())
 
-const cacheRoot = process.env.NOW
-  ? '.'
-  : `${process.env.HOME}/.chromium-cache`
+const cacheRoot = `${process.env.HOME}/.chromium-cache`
 
-const getFolderPath = (platform, revision) =>
-  `${cacheRoot}/chromium-${platform}-${revision}`
+const getFolderPath = (root, platform, revision) =>
+  `${root}/chromium-${platform}-${revision}`
 
-const getExecutablePath = (platform, revision) => {
-  const folder = getFolderPath(platform, revision)
+const getExecutablePath = (root, platform, revision) => {
+  const folder = getFolderPath(root, platform, revision)
   if (platform === 'mac') {
     return `${folder}/chrome-mac/Chromium.app/Contents/MacOS/Chromium`
   }
@@ -50,6 +51,24 @@ const getExecutablePath = (platform, revision) => {
   return `${folder}/chrome-win32/chrome.exe`
 }
 
+/*
+ * - [x] check module cache
+ * - [x] if exists, return
+ * - [x] check global cache
+ * - [x] if exists, copy and return
+ * - [x] install into global cache
+ * - [x] copy and return
+ */
+
+const copyCacheToModule = async (moduleExecutablePath, platform, revision) => {
+  await mkdirp(getFolderPath(__dirname, platform, revision))
+  await cpr(
+    getFolderPath(cacheRoot, platform, revision),
+    getFolderPath(__dirname, platform, revision)
+  )
+  await chmod(moduleExecutablePath, '755')
+}
+
 module.exports = async (
   {
     platform: platform = currentPlatform,
@@ -57,12 +76,26 @@ module.exports = async (
     log: log = false
   } = {}
 ) => {
-  const executablePath = getExecutablePath(platform, revision)
-  debug('executable path %s', executablePath)
+  const moduleExecutablePath = getExecutablePath(__dirname, platform, revision)
+  debug('module executable path %s', moduleExecutablePath)
   try {
-    await stat(executablePath)
-    return executablePath
+    await stat(moduleExecutablePath)
+    return moduleExecutablePath
   } catch (_) {}
+
+  const globalExecutablePath = getExecutablePath(cacheRoot, platform, revision)
+  debug('global executable path %s', globalExecutablePath)
+  let exists = false
+  try {
+    await stat(globalExecutablePath)
+    exists = true
+  } catch (_) {}
+
+  if (exists) {
+    debug('copy cache to module')
+    await copyCacheToModule(moduleExecutablePath, platform, revision)
+    return moduleExecutablePath
+  }
 
   let url = downloadURLs[platform]
   assert(url, `Unsupported platform: ${platform}`)
@@ -72,7 +105,7 @@ module.exports = async (
   try {
     await mkdir(cacheRoot)
   } catch (_) {}
-  const folderPath = getFolderPath(platform, revision)
+  const folderPath = getFolderPath(cacheRoot, platform, revision)
   const zipPath = `${folderPath}.zip`
 
   if (log) process.stderr.write(`Downloading Chromium r${revision}...`)
@@ -85,6 +118,9 @@ module.exports = async (
   debug('clean up')
   await unlink(zipPath)
 
+  debug('copy cache to module')
+  await copyCacheToModule(moduleExecutablePath, platform, revision)
+
   if (log) process.stderr.write('Done!\n')
-  return executablePath
+  return moduleExecutablePath
 }
