@@ -37,6 +37,7 @@ const currentPlatform = (p => {
 
 const homePath = require('os').homedir()
 const cacheRoot = `${homePath}/.chromium-cache`
+const installPath = `${__dirname}/.local-chromium`
 
 const getFolderPath = (root, platform, revision) =>
   `${root}/chromium-${platform}-${revision}`
@@ -62,10 +63,10 @@ const getExecutablePath = (root, platform, revision) => {
  */
 
 const copyCacheToModule = async (moduleExecutablePath, platform, revision) => {
-  await mkdirp(getFolderPath(__dirname, platform, revision))
+  await mkdirp(getFolderPath(installPath, platform, revision))
   await cpr(
     getFolderPath(cacheRoot, platform, revision),
-    getFolderPath(__dirname, platform, revision)
+    getFolderPath(installPath, platform, revision)
   )
   await chmod(moduleExecutablePath, '755')
 }
@@ -77,7 +78,7 @@ module.exports = async (
     log: log = false
   } = {}
 ) => {
-  const moduleExecutablePath = getExecutablePath(__dirname, platform, revision)
+  const moduleExecutablePath = getExecutablePath(installPath, platform, revision)
   debug('module executable path %s', moduleExecutablePath)
   try {
     await stat(moduleExecutablePath)
