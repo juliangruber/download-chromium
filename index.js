@@ -13,7 +13,6 @@ const extract = promisify(require('extract-zip'))
 const debug = require('debug')('download-chromium')
 const cpr = promisify(require('cpr'))
 const mkdirp = promisify(require('mkdirp'))
-const chmod = promisify(fs.chmod)
 
 const get = url => new Promise(resolve => https.get(url, resolve))
 
@@ -67,7 +66,6 @@ const copyCacheToModule = async (moduleExecutablePath, platform, revision) => {
     getFolderPath(cacheRoot, platform, revision),
     getFolderPath(__dirname, platform, revision)
   )
-  await chmod(moduleExecutablePath, '755')
 }
 
 module.exports = async (
