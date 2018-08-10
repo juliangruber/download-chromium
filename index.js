@@ -14,7 +14,11 @@ const debug = require('debug')('download-chromium')
 const cpr = promisify(require('cpr'))
 const mkdirp = promisify(require('mkdirp'))
 
-const get = url => new Promise(resolve => https.get(url, resolve))
+const proxy =
+  process.env.HTTPS_PROXY ||
+  process.env.npm_config_https_proxy ||
+  process.env.npm_config_proxy
+const get = url => new Promise(resolve => https.get({ url, proxy }, resolve))
 
 const downloadURLs = {
   linux:
@@ -76,7 +80,11 @@ module.exports = async (
     log: log = false
   } = {}
 ) => {
-  const moduleExecutablePath = getExecutablePath(installPath, platform, revision)
+  const moduleExecutablePath = getExecutablePath(
+    installPath,
+    platform,
+    revision
+  )
   debug('module executable path %s', moduleExecutablePath)
   try {
     await stat(moduleExecutablePath)
