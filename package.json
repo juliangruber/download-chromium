@@ -15,10 +15,10 @@
     "debug": "^3.0.1",
     "extract-zip": "^1.6.5",
     "mkdirp": "^0.5.1",
-    "promisepipe": "^2.0.0"
+    "promisepipe": "^3.0.0"
   },
   "devDependencies": {
-    "prettier-standard": "^6.0.0",
-    "standard": "^10.0.3"
+    "prettier-standard": "^8.0.1",
+    "standard": "^11.0.1"
   }
 }
