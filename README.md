@@ -1,5 +1,7 @@
 # download-chromium
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/juliangruber/download-chromium.svg)](https://greenkeeper.io/)
+
 Download [Chromium](https://www.chromium.org/)!
 
 Caches executables locally so you never download them twice.
