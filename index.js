@@ -23,17 +23,19 @@ const proxy =
 const get = url => new Promise(resolve => https.get({ url, proxy }, resolve))
 
 const downloadURLs = {
-  linux: 'https://storage.googleapis.com/chromium-browser-snapshots/Linux_x64/%d/%s.zip',
-  mac: 'https://storage.googleapis.com/chromium-browser-snapshots/Mac/%d/%s.zip',
-  win32: 'https://storage.googleapis.com/chromium-browser-snapshots/Win/%d/%s.zip',
-  win64: 'https://storage.googleapis.com/chromium-browser-snapshots/Win_x64/%d/%s.zip',
+  linux:
+    'https://storage.googleapis.com/chromium-browser-snapshots/Linux_x64/%d/%s.zip',
+  mac:
+    'https://storage.googleapis.com/chromium-browser-snapshots/Mac/%d/%s.zip',
+  win32:
+    'https://storage.googleapis.com/chromium-browser-snapshots/Win/%d/%s.zip',
+  win64:
+    'https://storage.googleapis.com/chromium-browser-snapshots/Win_x64/%d/%s.zip'
 }
 
 const archiveName = (platform, revision) => {
-  if (platform === 'linux')
-    return 'chrome-linux'
-  if (platform === 'mac')
-    return 'chrome-mac'
+  if (platform === 'linux') return 'chrome-linux'
+  if (platform === 'mac') return 'chrome-mac'
   if (platform === 'win32' || platform === 'win64') {
     return revision > revisionChange ? 'chrome-win' : 'chrome-win32'
   }
@@ -41,7 +43,11 @@ const archiveName = (platform, revision) => {
 }
 
 const downloadURL = (platform, revision) => {
-  return format(downloadURLs[platform], revision, archiveName(platform, revision))
+  return format(
+    downloadURLs[platform],
+    revision,
+    archiveName(platform, revision)
+  )
 }
 
 const currentPlatform = (p => {
@@ -89,13 +95,11 @@ const copyCacheToModule = async (moduleExecutablePath, platform, revision) => {
   )
 }
 
-module.exports = async (
-  {
-    platform: platform = currentPlatform,
-    revision: revision = '499413',
-    log: log = false
-  } = {}
-) => {
+module.exports = async ({
+  platform: platform = currentPlatform,
+  revision: revision = '499413',
+  log: log = false
+} = {}) => {
   const moduleExecutablePath = getExecutablePath(
     installPath,
     platform,
@@ -133,7 +137,10 @@ module.exports = async (
 
   if (log) process.stderr.write(`Downloading Chromium r${revision}...`)
   debug('download')
-  await pipe(await get(url), fs.createWriteStream(zipPath))
+  await pipe(
+    await get(url),
+    fs.createWriteStream(zipPath)
+  )
 
   debug('extract')
   await extract(zipPath, { dir: folderPath })
