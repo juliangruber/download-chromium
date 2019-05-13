@@ -14,6 +14,8 @@ const debug = require('debug')('download-chromium')
 const cpr = promisify(require('cpr'))
 const mkdirp = promisify(require('mkdirp'))
 
+// Windows archive name changed at r591479.
+const revisionChange = 591479
 const proxy =
   process.env.HTTPS_PROXY ||
   process.env.npm_config_https_proxy ||
@@ -21,14 +23,25 @@ const proxy =
 const get = url => new Promise(resolve => https.get({ url, proxy }, resolve))
 
 const downloadURLs = {
-  linux:
-    'https://storage.googleapis.com/chromium-browser-snapshots/Linux_x64/%d/chrome-linux.zip',
-  mac:
-    'https://storage.googleapis.com/chromium-browser-snapshots/Mac/%d/chrome-mac.zip',
-  win32:
-    'https://storage.googleapis.com/chromium-browser-snapshots/Win/%d/chrome-win32.zip',
-  win64:
-    'https://storage.googleapis.com/chromium-browser-snapshots/Win_x64/%d/chrome-win32.zip'
+  linux: 'https://storage.googleapis.com/chromium-browser-snapshots/Linux_x64/%d/%s.zip',
+  mac: 'https://storage.googleapis.com/chromium-browser-snapshots/Mac/%d/%s.zip',
+  win32: 'https://storage.googleapis.com/chromium-browser-snapshots/Win/%d/%s.zip',
+  win64: 'https://storage.googleapis.com/chromium-browser-snapshots/Win_x64/%d/%s.zip',
+}
+
+const archiveName = (platform, revision) => {
+  if (platform === 'linux')
+    return 'chrome-linux'
+  if (platform === 'mac')
+    return 'chrome-mac'
+  if (platform === 'win32' || platform === 'win64') {
+    return revision > revisionChange ? 'chrome-win' : 'chrome-win32'
+  }
+  return null
+}
+
+const downloadURL = (platform, revision) => {
+  return format(downloadURLs[platform], revision, archiveName(platform, revision))
 }
 
 const currentPlatform = (p => {
@@ -47,13 +60,16 @@ const getFolderPath = (root, platform, revision) =>
 
 const getExecutablePath = (root, platform, revision) => {
   const folder = getFolderPath(root, platform, revision)
+  const archiveFolder = archiveName(platform, revision)
+
   if (platform === 'mac') {
-    return `${folder}/chrome-mac/Chromium.app/Contents/MacOS/Chromium`
+    return `${folder}/${archiveFolder}/Chromium.app/Contents/MacOS/Chromium`
   }
   if (platform === 'linux') {
-    return `${folder}/chrome-linux/chrome`
+    return `${folder}/${archiveFolder}/chrome`
   }
-  return `${folder}/chrome-win32/chrome.exe`
+
+  return `${folder}/${archiveFolder}/chrome.exe`
 }
 
 /*
@@ -105,9 +121,8 @@ module.exports = async (
     return moduleExecutablePath
   }
 
-  let url = downloadURLs[platform]
-  assert(url, `Unsupported platform: ${platform}`)
-  url = format(url, revision)
+  let url = downloadURL(platform, revision)
+  assert(downloadURLs[platform], `Unsupported platform: ${platform}`)
   debug('download url %s', url)
 
   try {
