@@ -73,13 +73,11 @@ const copyCacheToModule = async (moduleExecutablePath, platform, revision) => {
   )
 }
 
-module.exports = async (
-  {
-    platform: platform = currentPlatform,
-    revision: revision = '499413',
-    log: log = false
-  } = {}
-) => {
+module.exports = async ({
+  platform: platform = currentPlatform,
+  revision: revision = '499413',
+  log: log = false
+} = {}) => {
   const moduleExecutablePath = getExecutablePath(
     installPath,
     platform,
@@ -118,7 +116,10 @@ module.exports = async (
 
   if (log) process.stderr.write(`Downloading Chromium r${revision}...`)
   debug('download')
-  await pipe(await get(url), fs.createWriteStream(zipPath))
+  await pipe(
+    await get(url),
+    fs.createWriteStream(zipPath)
+  )
 
   debug('extract')
   await extract(zipPath, { dir: folderPath })

@@ -18,7 +18,7 @@
     "promisepipe": "^2.0.0"
   },
   "devDependencies": {
-    "prettier-standard": "^6.0.0",
-    "standard": "^10.0.3"
+    "prettier-standard": "^9.1.1",
+    "standard": "^12.0.1"
   }
 }
