@@ -14,7 +14,7 @@
   "dependencies": {
     "cpr": "^3.0.1",
     "debug": "^4.1.1",
-    "extract-zip": "^1.6.5",
+    "extract-zip": "^1.6.7",
     "got": "^9.6.0",
     "mkdirp": "^0.5.1",
     "promisepipe": "^2.0.0",
