@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "cpr": "^3.0.1",
-    "debug": "^3.0.1",
+    "debug": "^4.1.1",
     "extract-zip": "^1.6.5",
     "got": "^9.6.0",
     "mkdirp": "^0.5.1",
