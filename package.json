@@ -5,7 +5,7 @@
   "repository": "juliangruber/download-chromium",
   "description": "Download chromium!",
   "scripts": {
-    "test": "prettier-standard '**/*.js' && standard"
+    "test": "prettier-standard '**/*.js' && standard && node bin.js"
   },
   "bin": {
     "download-chromium": "bin.js"
