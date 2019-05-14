@@ -1,5 +1,7 @@
 # download-chromium
 
+[![Build Status](https://travis-ci.org/juliangruber/download-chromium.svg?branch=master)](https://travis-ci.org/juliangruber/download-chromium)
+
 Download [Chromium](https://www.chromium.org/)!
 
 Caches executables locally so you never download them twice.
