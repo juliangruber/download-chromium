@@ -8,19 +8,24 @@ const stat = promisify(fs.stat)
 const unlink = promisify(fs.unlink)
 const assert = require('assert')
 const pipe = require('promisepipe')
-const https = require('https')
+const got = require('got')
 const extract = promisify(require('extract-zip'))
 const debug = require('debug')('download-chromium')
 const cpr = promisify(require('cpr'))
 const mkdirp = promisify(require('mkdirp'))
+const { getProxyForUrl } = require('proxy-from-env')
+const ProxyAgent = require('proxy-agent')
+const https = require('https')
 
 // Windows archive name changed at r591479.
 const revisionChange = 591479
-const proxy =
-  process.env.HTTPS_PROXY ||
-  process.env.npm_config_https_proxy ||
-  process.env.npm_config_proxy
-const get = url => new Promise(resolve => https.get({ url, proxy }, resolve))
+const get = url => {
+  const proxy = getProxyForUrl(url)
+  const agent = proxy
+    ? new ProxyAgent(proxy)
+    : undefined
+  return got.stream(url, { agent })
+}
 
 const downloadURLs = {
   linux:

@@ -5,7 +5,8 @@
   "repository": "juliangruber/download-chromium",
   "description": "Download chromium!",
   "scripts": {
-    "test": "prettier-standard '**/*.js' && standard && node bin.js"
+    "clean": "rm -rf .local-chromium ~/.chromium-cache",
+    "test": "prettier-standard '**/*.js' && standard && npm run clean && node bin.js"
   },
   "bin": {
     "download-chromium": "bin.js"
@@ -14,8 +15,11 @@
     "cpr": "^3.0.1",
     "debug": "^3.0.1",
     "extract-zip": "^1.6.5",
+    "got": "^9.6.0",
     "mkdirp": "^0.5.1",
-    "promisepipe": "^2.0.0"
+    "promisepipe": "^2.0.0",
+    "proxy-agent": "^3.1.0",
+    "proxy-from-env": "^1.0.0"
   },
   "devDependencies": {
     "prettier-standard": "^9.1.1",
