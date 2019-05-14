@@ -15,15 +15,12 @@ const cpr = promisify(require('cpr'))
 const mkdirp = promisify(require('mkdirp'))
 const { getProxyForUrl } = require('proxy-from-env')
 const ProxyAgent = require('proxy-agent')
-const https = require('https')
 
 // Windows archive name changed at r591479.
 const revisionChange = 591479
 const get = url => {
   const proxy = getProxyForUrl(url)
-  const agent = proxy
-    ? new ProxyAgent(proxy)
-    : undefined
+  const agent = proxy ? new ProxyAgent(proxy) : undefined
   return got.stream(url, { agent })
 }
 
