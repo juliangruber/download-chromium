@@ -50,9 +50,19 @@ $ npm install download-chromium
 
 ## API
 
-### download({ platform = currentPlatform, revision = '499413', log = false })
-
+### download
+```
+download({ 
+	platform = currentPlatform, 
+	revision = '499413', 
+	log = false, 
+	onProgress = undefined, 
+	installPath = '{root folder od download-chromium module}' })
+```
 Returns a Promise resolving with the Chromium executable path.
+
+* use `installPath` if running from within `electron` packaged app (for example set install path to `require('electron').app.getPath('userData')`)
+* provide `onProgress` to track download progress. `onProgress` gets single argument: `{ percent, transferred: downloaded, total: downloadBodySize }` 
 
 ## Kudos
 

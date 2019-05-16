@@ -18,10 +18,14 @@ const ProxyAgent = require('proxy-agent')
 
 // Windows archive name changed at r591479.
 const revisionChange = 591479
-const get = url => {
+const get = (url, onProgress) => {
   const proxy = getProxyForUrl(url)
   const agent = proxy ? new ProxyAgent(proxy) : undefined
-  return got.stream(url, { agent })
+  const result = got.stream(url, { agent });
+  if (onProgress) {
+    result.on('downloadProgress', onProgress)
+  }
+  return result;
 }
 
 const downloadURLs = {
@@ -61,7 +65,6 @@ const currentPlatform = (p => {
 
 const homePath = require('os').homedir()
 const cacheRoot = `${homePath}/.chromium-cache`
-const installPath = `${__dirname}/.local-chromium`
 
 const getFolderPath = (root, platform, revision) =>
   `${root}/chromium-${platform}-${revision}`
@@ -89,7 +92,7 @@ const getExecutablePath = (root, platform, revision) => {
  * - [x] copy and return
  */
 
-const copyCacheToModule = async (moduleExecutablePath, platform, revision) => {
+const copyCacheToModule = async (moduleExecutablePath, platform, revision, installPath) => {
   await mkdirp(getFolderPath(installPath, platform, revision))
   await cpr(
     getFolderPath(cacheRoot, platform, revision),
@@ -98,10 +101,13 @@ const copyCacheToModule = async (moduleExecutablePath, platform, revision) => {
 }
 
 module.exports = async ({
-  platform: platform = currentPlatform,
-  revision: revision = '499413',
-  log: log = false
-} = {}) => {
+                          platform: platform = currentPlatform,
+                          revision: revision = '499413',
+                          log: log = false,
+                          installPath: installPathBase = __dirname,
+                          onProgress: onProgress
+                        } = {}) => {
+  const installPath = `${installPathBase}/.local-chromium`
   const moduleExecutablePath = getExecutablePath(
     installPath,
     platform,
@@ -123,7 +129,7 @@ module.exports = async ({
 
   if (exists) {
     debug('copy cache to module')
-    await copyCacheToModule(moduleExecutablePath, platform, revision)
+    await copyCacheToModule(moduleExecutablePath, platform, revision, installPath)
     return moduleExecutablePath
   }
 
@@ -140,7 +146,7 @@ module.exports = async ({
   if (log) process.stderr.write(`Downloading Chromium r${revision}...`)
   debug('download')
   await pipe(
-    await get(url),
+    await get(url, onProgress),
     fs.createWriteStream(zipPath)
   )
 
@@ -151,7 +157,7 @@ module.exports = async ({
   await unlink(zipPath)
 
   debug('copy cache to module')
-  await copyCacheToModule(moduleExecutablePath, platform, revision)
+  await copyCacheToModule(moduleExecutablePath, platform, revision, installPath)
 
   if (log) process.stderr.write('Done!\n')
   return moduleExecutablePath
