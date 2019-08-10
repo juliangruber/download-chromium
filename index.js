@@ -21,11 +21,11 @@ const revisionChange = 591479
 const get = (url, onProgress) => {
   const proxy = getProxyForUrl(url)
   const agent = proxy ? new ProxyAgent(proxy) : undefined
-  const result = got.stream(url, { agent });
+  const result = got.stream(url, { agent })
   if (onProgress) {
     result.on('downloadProgress', onProgress)
   }
-  return result;
+  return result
 }
 
 const downloadURLs = {
@@ -92,7 +92,12 @@ const getExecutablePath = (root, platform, revision) => {
  * - [x] copy and return
  */
 
-const copyCacheToModule = async (moduleExecutablePath, platform, revision, installPath) => {
+const copyCacheToModule = async (
+  moduleExecutablePath,
+  platform,
+  revision,
+  installPath
+) => {
   await mkdirp(getFolderPath(installPath, platform, revision))
   await cpr(
     getFolderPath(cacheRoot, platform, revision),
@@ -101,13 +106,12 @@ const copyCacheToModule = async (moduleExecutablePath, platform, revision, insta
 }
 
 module.exports = async ({
-                          platform: platform = currentPlatform,
-                          revision: revision = '499413',
-                          log: log = false,
-                          installPath: installPathBase = __dirname,
-                          onProgress: onProgress
-                        } = {}) => {
-  const installPath = `${installPathBase}/.local-chromium`
+  platform: platform = currentPlatform,
+  revision: revision = '499413',
+  log: log = false,
+  installPath: installPath = `${__dirname}/.local-chromium`,
+  onProgress
+} = {}) => {
   const moduleExecutablePath = getExecutablePath(
     installPath,
     platform,
@@ -129,7 +133,12 @@ module.exports = async ({
 
   if (exists) {
     debug('copy cache to module')
-    await copyCacheToModule(moduleExecutablePath, platform, revision, installPath)
+    await copyCacheToModule(
+      moduleExecutablePath,
+      platform,
+      revision,
+      installPath
+    )
     return moduleExecutablePath
   }
 
