@@ -3,7 +3,7 @@
 
 const download = require('.')
 
-function onPregress ({ percent, transferred, total }) {
+function onProgress ({ percent, transferred, total }) {
   console.log(
     `progress: ${Math.round(
       percent * 100
