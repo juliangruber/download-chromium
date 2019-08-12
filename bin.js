@@ -12,7 +12,7 @@ function onProgress ({ percent, transferred, total }) {
 }
 download({
   log: true,
-  onProgress: onPregress
+  onProgress
 })
   .then(exec => console.log(exec))
   .catch(err => {
