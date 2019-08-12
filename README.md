@@ -61,7 +61,7 @@ download({
 ```
 Returns a Promise resolving with the Chromium executable path.
 
-* `installPath`: set the install path if you can't write your `node_modules`, eg from within an `electron` packaged app (`installPath: require('electron').app.getPath('userData')`)
+* `installPath`: set the install path if you can't write to your `node_modules`, eg from within an `electron` packaged app (`installPath: require('electron').app.getPath('userData')`)
 * `onProgress`: track download progress. `onProgress` receives one argument `{ percent, transferred, total }` 
 
 ## Kudos
