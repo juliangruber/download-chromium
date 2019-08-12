@@ -57,7 +57,7 @@ download({
 	revision = '499413', 
 	log = false, 
 	onProgress = undefined, 
-	installPath = '{rootFolderOfThisModule}/.local-chromium' })
+	installPath = '{__dirname}/.local-chromium' })
 ```
 Returns a Promise resolving with the Chromium executable path.
 
