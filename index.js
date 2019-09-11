@@ -63,9 +63,7 @@ const currentPlatform = (p => {
   return ''
 })(os.platform())
 
-const homePath = require('os').homedir()
-const cacheRoot = `${homePath}/.chromium-cache`
-
+const cacheRoot = `${os.homedir()}/.chromium-cache`
 const getFolderPath = (root, platform, revision) =>
   `${root}/chromium-${platform}-${revision}`
 
