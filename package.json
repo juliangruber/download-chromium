@@ -6,6 +6,7 @@
   "description": "Download chromium!",
   "scripts": {
     "clean": "del-cli -f .local-chromium ~/.chromium-cache",
+    "release": "np",
     "test": "prettier-standard '**/*.js' && standard && npm run clean && node bin.js"
   },
   "bin": {
@@ -23,6 +24,7 @@
   },
   "devDependencies": {
     "del-cli": "^1.1.0",
+    "np": "^6.2.1",
     "prettier-standard": "^14.0.5",
     "standard": "^12.0.1"
   }
