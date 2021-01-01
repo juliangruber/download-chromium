@@ -66,7 +66,7 @@ Returns a Promise resolving with the Chromium executable path.
 
 ## Kudos
 
-This script was based on https://github.com/GoogleChrome/puppeteer/blob/master/utils/ChromiumDownloader.js.
+This script was based on https://github.com/puppeteer/puppeteer/blob/11d94525c821ab1bb6e059f3b998a8660f597348/utils/ChromiumDownloader.js.
 
 ## License
 
