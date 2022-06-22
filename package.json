@@ -16,7 +16,7 @@
     "cpr": "^3.0.1",
     "debug": "^4.1.1",
     "extract-zip": "^1.6.7",
-    "got": "^9.6.0",
+    "got": "^11.8.5",
     "mkdirp": "^0.5.1",
     "promisepipe": "^2.0.0",
     "proxy-agent": "^3.1.0",
