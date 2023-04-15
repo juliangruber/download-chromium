@@ -1,6 +1,6 @@
 # download-chromium
 
-[![Build Status](https://travis-ci.org/juliangruber/download-chromium.svg?branch=master)](https://travis-ci.org/juliangruber/download-chromium)
+[![CI](https://github.com/juliangruber/download-chromium/actions/workflows/ci.yml/badge.svg)](https://github.com/juliangruber/download-chromium/actions/workflows/ci.yml)
 
 Download [Chromium](https://www.chromium.org/)!
 
